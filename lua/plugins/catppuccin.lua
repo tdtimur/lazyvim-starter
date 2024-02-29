@@ -1,25 +1,9 @@
 return {
   {
-    "folke/tokyonight.nvim",
-    enabled = false,
-    lazy = true,
-    opts = {
-      style = "night",
-      transparent = true,
-      styles = {
-        sidebars = "transparent",
-        floats = "transparent",
-      },
-    },
-  },
-  {
     "catppuccin/nvim",
-    enabled = true,
     lazy = true,
     name = "catppuccin",
-    priority = 1000,
     opts = {
-      flavor = "mocha",
       integrations = {
         aerial = true,
         alpha = true,
@@ -56,12 +40,9 @@ return {
         which_key = true,
       },
     },
+  }, {
+  "LazyVim/LazyVim",
+  opts = {
+    colorscheme = "catppuccin",
   },
-  { "ellisonleao/gruvbox.nvim", enabled = false },
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  }
-}
+} }
