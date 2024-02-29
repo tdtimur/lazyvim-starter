@@ -3,9 +3,13 @@ return {
   cmd = "Copilot",
   build = ":Copilot auth",
   opts = {
-    suggestion = { enabled = true },
+    suggestion = {
+      enabled = false,
+      auto_trigger = false,
+      debounce = 2000,
+    },
     panel = {
-      enabled = true
+      enabled = false,
     },
     filetypes = {
       markdown = true,
