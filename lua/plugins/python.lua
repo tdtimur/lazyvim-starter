@@ -7,7 +7,7 @@ return {
       -- vim.list_extend(opts.ensure_installed, { "pyright", "black", "ruff-lsp", "ruff" })
       vim.list_extend(opts.ensure_installed, {
         "black",
-        "ruff",
+        -- "ruff",
         "pyright"
       })
     end,
@@ -24,8 +24,10 @@ return {
         { "<leader>dPc", function() require('dap-python').test_class() end,  desc = "Debug Class" },
       },
       config = function()
-        local path = require("mason-registry").get_package("debugpy"):get_install_path()
-        require("dap-python").setup(path .. "/opt/homebrew/bin/python3")
+        -- local path = require("mason-registry").get_package("debugpy"):get_install_path()
+        local cwd = vim.fn.getcwd()
+        -- require("dap-python").setup(path .. "/opt/homebrew/bin/python3")
+        require("dap-python").setup(cwd .. "/.venv/bin/python")
       end,
     },
   },
@@ -72,27 +74,28 @@ return {
     opts = {
       servers = {
         pyright = {},
-        ruff_lsp = {
-          -- handlers = {
-          --   ["textDocument/publishDiagnostics"] = function() end,
-          -- },
-        },
-        jedi_language_server = {},
+        -- ruff_lsp = {
+        -- handlers = {
+        --   ["textDocument/publishDiagnostics"] = function() end,
+        -- },
+        -- },
+        jedi_language_server = { mason = false, autostart = false },
+        ruff_lsp = { mason = false, autostart = false },
       },
       setup = {
-        ruff_lsp = function()
-          require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "ruff_lsp" then
-              -- Disable hover in favor of Pyright
-              client.server_capabilities.hoverProvider = false
-            end
-          end)
-        end,
+        -- ruff_lsp = function()
+        --   require("lazyvim.util").lsp.on_attach(function(client, _)
+        --     if client.name == "ruff_lsp" then
+        --       -- Disable hover in favor of Pyright
+        --       client.server_capabilities.hoverProvider = false
+        --     end
+        --   end)
+        -- end,
         pyright = function()
           require("lazyvim.util").lsp.on_attach(function(client, _)
             if client.name == "pyright" then
               -- disable hover in favor of jedi-language-server
-              client.server_capabilities.hoverProvider = false
+              client.server_capabilities.hoverProvider = true
             end
           end)
         end,
@@ -126,6 +129,7 @@ return {
     cmd = "VenvSelect",
     opts = {
       dap_enabled = true,
+      name = ".venv",
     },
     keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv" } },
   },
