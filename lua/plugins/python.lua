@@ -7,7 +7,7 @@ return {
       -- vim.list_extend(opts.ensure_installed, { "pyright", "black", "ruff-lsp", "ruff" })
       vim.list_extend(opts.ensure_installed, {
         "black",
-        -- "ruff",
+        "ruff",
         "pyright"
       })
     end,
@@ -74,23 +74,23 @@ return {
     opts = {
       servers = {
         pyright = {},
-        -- ruff_lsp = {
-        -- handlers = {
-        --   ["textDocument/publishDiagnostics"] = function() end,
-        -- },
-        -- },
+        ruff_lsp = {
+          handlers = {
+            ["textDocument/publishDiagnostics"] = function() end,
+          },
+        },
         jedi_language_server = { mason = false, autostart = false },
-        ruff_lsp = { mason = false, autostart = false },
+        -- ruff_lsp = { mason = false, autostart = false },
       },
       setup = {
-        -- ruff_lsp = function()
-        --   require("lazyvim.util").lsp.on_attach(function(client, _)
-        --     if client.name == "ruff_lsp" then
-        --       -- Disable hover in favor of Pyright
-        --       client.server_capabilities.hoverProvider = false
-        --     end
-        --   end)
-        -- end,
+        ruff_lsp = function()
+          require("lazyvim.util").lsp.on_attach(function(client, _)
+            if client.name == "ruff_lsp" then
+              -- Disable hover in favor of Pyright
+              client.server_capabilities.hoverProvider = false
+            end
+          end)
+        end,
         pyright = function()
           require("lazyvim.util").lsp.on_attach(function(client, _)
             if client.name == "pyright" then
@@ -129,6 +129,8 @@ return {
     cmd = "VenvSelect",
     opts = {
       dap_enabled = true,
+      -- Path is relative to the project root under .venv directory
+      path = ".venv",
       name = ".venv",
     },
     keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv" } },
