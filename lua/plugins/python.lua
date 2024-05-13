@@ -1,3 +1,5 @@
+vim.g.python_host_prog = '/opt/homebrew/bin/python3.11'
+
 return {
   -- Add `pyright` to mason
   -- TODO: check following tools -> mypy types-requests types-docutils
