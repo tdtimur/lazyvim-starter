@@ -3,8 +3,8 @@ return {
   event = "VeryLazy",
   opts = {
     cmdline = { enabled = true, view = "cmdline" },
-    -- popupmenu = { enabled = false },
-    -- messages = { enabled = false },
+    popupmenu = { enabled = false },
+    messages = { enabled = false },
     lsp = {
       override = {
         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
