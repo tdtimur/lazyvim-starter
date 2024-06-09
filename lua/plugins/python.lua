@@ -126,15 +126,32 @@ return {
   {
     "linux-cultist/venv-selector.nvim",
     dependencies = {
+      "neovim/nvim-lspconfig",
+      "mfussenegger/nvim-dap",
       "mfussenegger/nvim-dap-python",
+      { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
     },
-    cmd = "VenvSelect",
-    opts = {
-      dap_enabled = true,
-      -- Path is relative to the project root under .venv directory
-      path = ".venv",
-      name = ".venv",
+    lazy = false,
+    branch = "regexp",
+    config = function()
+      require("venv-selector").setup({
+        settings = {
+          enable_cached_venvs = true,
+          cached_venv_automatic_activation = true,
+          notify_user_on_venv_activation = true,
+        }
+      })
+    end,
+    keys = {
+      { ",v", "<cmd>VenvSelect<cr>" },
     },
-    keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv" } },
+    -- cmd = "VenvSelect",
+    -- opts = {
+    --   dap_enabled = true,
+    --   -- Path is relative to the project root under .venv directory
+    --   path = ".venv",
+    --   name = ".venv",
+    -- },
+    -- keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv" } },
   },
 }
