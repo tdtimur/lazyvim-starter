@@ -10,7 +10,7 @@ return {
       vim.list_extend(opts.ensure_installed, {
         "ruff",
         "ruff-lsp",
-        "pyright"
+        "basedpyright"
       })
     end,
   },
@@ -75,13 +75,14 @@ return {
     dependencies = {},
     opts = {
       servers = {
-        pyright = {},
+        basedpyright = { enabled = true },
         ruff_lsp = {
           handlers = {
             ["textDocument/publishDiagnostics"] = function() end,
           },
         },
         jedi_language_server = { mason = false, autostart = false },
+        pyright = { mason = false, autostart = false },
         -- ruff_lsp = { mason = false, autostart = false },
       },
       setup = {
@@ -93,9 +94,9 @@ return {
             end
           end)
         end,
-        pyright = function()
+        basedpyright = function()
           require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "pyright" then
+            if client.name == "basedpyright" then
               -- disable hover in favor of jedi-language-server
               client.server_capabilities.hoverProvider = true
             end
