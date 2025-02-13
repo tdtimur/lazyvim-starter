@@ -6,7 +6,14 @@ return {
       "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
-    opts = function()
+    opts = function(_, o)
+      LazyVim.extend(o.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
+        {
+          name = "typescript-svelte-plugin",
+          location = LazyVim.get_pkg_path("svelte-language-server", "/node_modules/typescript-svelte-plugin"),
+          enableForWorkspaceTypeScriptVersions = true,
+        },
+      })
       ---@class PluginLspOpts
       local ret = {
         -- options for vim.diagnostic.config()
@@ -67,6 +74,14 @@ return {
         },
         -- LSP Server Settings
         servers = {
+          tailwindcss = {
+            -- exclude a filetype from the default_config
+            filetypes_exclude = { "markdown" },
+            -- add additional filetypes to the default_config
+            filetypes_include = {},
+            -- to fully override the default_config, change the below
+            -- filetypes = {}
+          },
           gopls = {
             settings = {
               gopls = {
@@ -97,11 +112,25 @@ return {
                   unusedwrite = true,
                   useany = true,
                 },
-                usePlaceholders = true,
+                usePlaceholders = false,
                 completeUnimported = true,
                 staticcheck = true,
                 directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
                 semanticTokens = true,
+              },
+            },
+          },
+          svelte = {
+            keys = {
+              {
+                "<leader>co",
+                LazyVim.lsp.action["source.organizeImports"],
+                desc = "Organize Imports",
+              },
+            },
+            capabilities = {
+              workspace = {
+                didChangeWatchedFiles = vim.fn.has("nvim-0.10") == 0 and { dynamicRegistration = true },
               },
             },
           },
@@ -140,6 +169,33 @@ return {
         -- you can do any additional lsp server setup here
         -- return true if you don't want this server to be setup with lspconfig
         setup = {
+          tailwindcss = function(_, opts)
+            local tw = LazyVim.lsp.get_raw_config("tailwindcss")
+            opts.filetypes = opts.filetypes or {}
+
+            -- Add default filetypes
+            vim.list_extend(opts.filetypes, tw.default_config.filetypes)
+
+            -- Remove excluded filetypes
+            --- @param ft string
+            opts.filetypes = vim.tbl_filter(function(ft)
+              return not vim.tbl_contains(opts.filetypes_exclude or {}, ft)
+            end, opts.filetypes)
+
+            -- Additional settings for Phoenix projects
+            opts.settings = {
+              tailwindCSS = {
+                includeLanguages = {
+                  elixir = "html-eex",
+                  eelixir = "html-eex",
+                  heex = "html-eex",
+                },
+              },
+            }
+
+            -- Add additional filetypes
+            vim.list_extend(opts.filetypes, opts.filetypes_include or {})
+          end,
           gopls = function(_, opts)
             -- workaround for gopls not supporting semanticTokensProvider
             -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
